@@ -1,11 +1,13 @@
 package ru.nsu.fit.lobkov.view;
 
 import pro.batalin.ddl4j.model.Schema;
+import pro.batalin.ddl4j.model.Table;
 import ru.nsu.fit.lobkov.controllers.MainFrameController;
 import ru.nsu.fit.lobkov.models.DatabaseModel;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.List;
 
 /**
  * Created by Ilya on 21.05.2017.
@@ -18,6 +20,8 @@ public class MainFrame extends BaseFrame {
     private JComboBox schemaComboBox;
 
     private DatabaseModel dbModel;
+    private DefaultListModel<String> tableListModel;
+
 
     public MainFrame(MainFrameController controller, DatabaseModel dbModel) throws HeadlessException {
         this.controller = controller;
@@ -36,6 +40,13 @@ public class MainFrame extends BaseFrame {
 
     }
 
+    public void setTableList(List<String> tableList) {
+        tableListModel.clear();
+        for (String t : tableList) {
+            tableListModel.addElement(t);
+        }
+    }
+
 
     private void createMenuBar() {
         JMenu fileMenu = createMenu("File");
@@ -44,13 +55,8 @@ public class MainFrame extends BaseFrame {
 
     private void createUIComponents() {
         schemaComboBox = new JComboBox<>(dbModel.getSchemasList().toArray());
-
-        DefaultListModel<String> tableListModel = new DefaultListModel<>();
-        tableListModel.addElement("PEOPLE");
-        tableListModel.addElement("COMPANY");
-        tableListModel.addElement("SALARY");
-
+        tableListModel = new DefaultListModel<>();
         tableList = new JList<>(tableListModel);
-
     }
+
 }

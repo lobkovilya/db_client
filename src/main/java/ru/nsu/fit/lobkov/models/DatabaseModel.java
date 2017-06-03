@@ -2,6 +2,7 @@ package ru.nsu.fit.lobkov.models;
 
 import pro.batalin.ddl4j.DatabaseOperationException;
 import pro.batalin.ddl4j.model.Schema;
+import pro.batalin.ddl4j.model.Table;
 import pro.batalin.ddl4j.platforms.Platform;
 import pro.batalin.ddl4j.platforms.PlatformFactory;
 import pro.batalin.ddl4j.platforms.PlatformFactoryException;
@@ -18,6 +19,7 @@ import java.util.Locale;
  */
 public class DatabaseModel {
     private Platform platform;
+    private Schema currentScheme;
 
     public DatabaseModel() throws PlatformFactoryException, SQLException {
         PlatformFactory platformFactory = new PlatformFactory();
@@ -40,5 +42,15 @@ public class DatabaseModel {
         return new ArrayList<>();
     }
 
+    public Schema getCurrentScheme() {
+        return currentScheme;
+    }
 
+    public void setCurrentScheme(Schema currentScheme) {
+        this.currentScheme = currentScheme;
+    }
+
+    public List<String> getTableList() throws DatabaseOperationException {
+        return platform.loadTables(currentScheme.getName());
+    }
 }
