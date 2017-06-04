@@ -4,6 +4,7 @@ import pro.batalin.ddl4j.DatabaseOperationException;
 import pro.batalin.ddl4j.model.Schema;
 import pro.batalin.ddl4j.model.Table;
 import ru.nsu.fit.lobkov.models.DatabaseModel;
+import ru.nsu.fit.lobkov.view.CreateTableFrame;
 import ru.nsu.fit.lobkov.view.MainFrame;
 
 import java.util.List;
@@ -14,6 +15,7 @@ import java.util.List;
 public class MainFrameController {
     private MainFrame mainFrame;
     private DatabaseModel dbModel;
+    private CreateTableFrameController createTableFrameController;
 
 
     public MainFrameController(DatabaseModel dbModel) {
@@ -40,5 +42,9 @@ public class MainFrameController {
         if (selectedTable != null) {
             mainFrame.setTableView(selectedTable);
         }
+    }
+
+    public void createTable() {
+        createTableFrameController = new CreateTableFrameController();
     }
 }

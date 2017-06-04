@@ -71,8 +71,9 @@ public class MainFrame extends BaseFrame {
     }
 
     private void createMenuBar() {
-        JMenu fileMenu = createMenu("File");
-        JMenuItem connectItem = createMenuItem(fileMenu, "Update", controller::updateTableList);
+        JMenu databaseMenu = createMenu("Database");
+        JMenuItem updateItem = createMenuItem(databaseMenu, "Update", controller::updateTableList);
+        JMenuItem createTableItem = createMenuItem(databaseMenu, "Create table", controller::createTable);
     }
 
     private void createUIComponents() {
@@ -81,19 +82,6 @@ public class MainFrame extends BaseFrame {
         tableListModel = new DefaultListModel<>();
         tableList = new JList<>(tableListModel);
 
-//        Table table = new Table();
-//        Column firstName = new Column();
-//        firstName.setName("First name");
-//
-//        Column lastName = new Column();
-//        lastName.setName("Last name");
-//
-//        Column age = new Column();
-//        age.setName("age");
-//
-//        table.addColumn(firstName);
-//        table.addColumn(lastName);
-//        table.addColumn(age);
         tableView = new JTable();
         tableScrollPanel = new JScrollPane(tableView);
         tableView.setFillsViewportHeight(true);
