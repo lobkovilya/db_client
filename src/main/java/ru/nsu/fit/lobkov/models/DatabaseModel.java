@@ -7,9 +7,7 @@ import pro.batalin.ddl4j.platforms.Platform;
 import pro.batalin.ddl4j.platforms.PlatformFactory;
 import pro.batalin.ddl4j.platforms.PlatformFactoryException;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -20,6 +18,7 @@ import java.util.Locale;
 public class DatabaseModel {
     private Platform platform;
     private Schema currentScheme;
+    private Connection connection;
 
     public DatabaseModel() throws PlatformFactoryException, SQLException {
         PlatformFactory platformFactory = new PlatformFactory();
@@ -29,7 +28,7 @@ public class DatabaseModel {
         String password = "111111";
 
         Locale.setDefault(Locale.ENGLISH);
-        Connection connection = DriverManager.getConnection(connectionString, username, password);
+        connection = DriverManager.getConnection(connectionString, username, password);
         platform = platformFactory.create("oracle", connection);
     }
 
@@ -50,7 +49,20 @@ public class DatabaseModel {
         this.currentScheme = currentScheme;
     }
 
-    public List<String> getTableList() throws DatabaseOperationException {
-        return platform.loadTables(currentScheme.getName());
+    public List<Table> getTableList() throws DatabaseOperationException {
+        List<String> tableNames = platform.loadTables(currentScheme.getName());
+        List<Table> tables = new ArrayList<>();
+
+        for (String name : tableNames) {
+            tables.add(platform.loadTable(currentScheme, name));
+        }
+
+        return tables;
+    }
+
+    public ResultSet loadRows(Table table) throws SQLException {
+        String selectQuery = "SELECT * FROM " + table.getFullName();
+        Statement statement = connection.createStatement();
+        return statement.executeQuery(selectQuery);
     }
 }

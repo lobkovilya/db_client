@@ -8,11 +8,6 @@
     <properties/>
     <border type="none"/>
     <children>
-      <hspacer id="c5ad6">
-        <constraints>
-          <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-        </constraints>
-      </hspacer>
       <grid id="74699" layout-manager="GridLayoutManager" row-count="2" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
         <margin top="5" left="5" bottom="5" right="5"/>
         <constraints>
@@ -47,7 +42,7 @@
               </component>
             </children>
           </grid>
-          <scrollpane id="ee67b">
+          <scrollpane id="ee67b" binding="listScrollPanel">
             <constraints>
               <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false">
                 <preferred-size width="206" height="128"/>
@@ -63,7 +58,6 @@
                 <properties>
                   <alignmentX value="0.5"/>
                   <autoscrolls value="true"/>
-                  <dbModel/>
                 </properties>
                 <clientProperties>
                   <html.disable class="java.lang.Boolean" value="false"/>
@@ -73,6 +67,19 @@
           </scrollpane>
         </children>
       </grid>
+      <scrollpane id="b2a04" binding="tableScrollPanel" custom-create="true">
+        <constraints>
+          <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties/>
+        <border type="none"/>
+        <children>
+          <component id="47340" class="javax.swing.JTable" binding="tableView" custom-create="true">
+            <constraints/>
+            <properties/>
+          </component>
+        </children>
+      </scrollpane>
     </children>
   </grid>
 </form>

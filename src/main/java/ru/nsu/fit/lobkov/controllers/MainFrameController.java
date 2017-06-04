@@ -2,10 +2,10 @@ package ru.nsu.fit.lobkov.controllers;
 
 import pro.batalin.ddl4j.DatabaseOperationException;
 import pro.batalin.ddl4j.model.Schema;
+import pro.batalin.ddl4j.model.Table;
 import ru.nsu.fit.lobkov.models.DatabaseModel;
 import ru.nsu.fit.lobkov.view.MainFrame;
 
-import java.awt.event.ActionEvent;
 import java.util.List;
 
 /**
@@ -22,7 +22,7 @@ public class MainFrameController {
     }
 
     public void updateTableList() {
-        List<String> tableList;
+        List<Table> tableList;
         try {
             tableList = dbModel.getTableList();
             mainFrame.setTableList(tableList);
@@ -34,5 +34,11 @@ public class MainFrameController {
     public void onSchemaChanged(Schema schema) {
         dbModel.setCurrentScheme(schema);
         updateTableList();
+    }
+
+    public void onTableSelectionChanged(Table selectedTable) {
+        if (selectedTable != null) {
+            mainFrame.setTableView(selectedTable);
+        }
     }
 }
