@@ -1,20 +1,14 @@
 package ru.nsu.fit.lobkov.view;
 
 import pro.batalin.ddl4j.model.Column;
-import pro.batalin.ddl4j.model.DBType;
 import ru.nsu.fit.lobkov.controllers.CreateTableFrameController;
-import ru.nsu.fit.lobkov.models.CustomColumnModel;
 
 import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by Ilya on 04.06.2017.
@@ -53,10 +47,11 @@ public class CreateTableFrame extends JFrame {
                 }
             }
         });
+        OKButton.addActionListener(controller::okBtnPressed);
     }
 
     public static void main(String[] args) {
-        CreateTableFrameController controller = new CreateTableFrameController();
+//        CreateTableFrameController controller = new CreateTableFrameController(d);
     }
 
     public void addColumnCreatorView() {
@@ -74,6 +69,16 @@ public class CreateTableFrame extends JFrame {
     private void createUIComponents() {
         columnPanel = new JPanel();
         columnPanel.setLayout(new BoxLayout(columnPanel, BoxLayout.Y_AXIS));
+    }
+
+    public List<Column> buildColumnList() {
+        return columnCreators.stream()
+                    .map(ColumnCreatorElement::buildColumn)
+                    .collect(Collectors.toList());
+    }
+
+    public String getTableName() {
+        return tableNameField.getText();
     }
 
 

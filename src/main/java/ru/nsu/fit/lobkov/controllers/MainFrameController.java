@@ -45,6 +45,6 @@ public class MainFrameController {
     }
 
     public void createTable() {
-        createTableFrameController = new CreateTableFrameController();
+        createTableFrameController = new CreateTableFrameController(dbModel);
     }
 }

@@ -1,5 +1,8 @@
 package ru.nsu.fit.lobkov.view;
 
+import pro.batalin.ddl4j.model.Column;
+import pro.batalin.ddl4j.model.DBType;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
@@ -11,13 +14,14 @@ import java.awt.event.MouseEvent;
 public class ColumnCreatorElement extends JPanel {
     private JCheckBox isSelectedCheckBox = new JCheckBox();
 
-    private JTextField nameField = new JTextField(10);
-    private JTextField typeField = new JTextField(10);
-    private JTextField sizeField = new JTextField(10);
-    private JTextField defaultField = new JTextField(10);
+    private JTextField nameField = new JTextField(15);
+    private JTextField typeField = new JTextField(15);
+    private JTextField sizeField = new JTextField(15);
+    private JTextField defaultField = new JTextField(15);
 
     private JCheckBox isNotNull = new JCheckBox("Not null");
     private JCheckBox isUnique = new JCheckBox("Unique");
+    private JCheckBox isPrimaryKey = new JCheckBox("Primary key");
 
     public ColumnCreatorElement() {
         JPanel checkPanel = new JPanel();
@@ -46,6 +50,7 @@ public class ColumnCreatorElement extends JPanel {
 
         JPanel checkBoxPanel = new JPanel();
         checkBoxPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
+        checkBoxPanel.add(isPrimaryKey);
         checkBoxPanel.add(isNotNull);
         checkBoxPanel.add(isUnique);
 
@@ -82,4 +87,44 @@ public class ColumnCreatorElement extends JPanel {
         return isSelectedCheckBox.isSelected();
     }
 
+    public Column buildColumn() {
+        Column result = new Column();
+        result.setName(getColumnName());
+        result.setType(new DBType(getColumnType()));
+        result.setSize(getColumnSize());
+        result.setDefaultValue(getColumnDefaultValue());
+        result.setRequired(isNotNull());
+        result.setPrimaryKey(isPrimaryKey());
+
+        return result;
+    }
+
+    public boolean isNotNull() {
+        return isNotNull.isSelected();
+    }
+
+    public boolean isUnique() {
+        return isUnique.isSelected();
+    }
+
+    public boolean isPrimaryKey() {
+        return isPrimaryKey.isSelected();
+    }
+
+    public String getColumnName() {
+        return nameField.getText();
+    }
+
+    public String getColumnType() {
+        return typeField.getText();
+    }
+
+    public Integer getColumnSize() {
+        String text = sizeField.getText();
+        return text.isEmpty() ? null : Integer.parseInt(text);
+    }
+
+    public String getColumnDefaultValue() {
+        return defaultField.getText();
+    }
 }

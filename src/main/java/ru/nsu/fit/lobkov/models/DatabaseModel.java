@@ -1,8 +1,11 @@
 package ru.nsu.fit.lobkov.models;
 
 import pro.batalin.ddl4j.DatabaseOperationException;
+import pro.batalin.ddl4j.model.Column;
 import pro.batalin.ddl4j.model.Schema;
 import pro.batalin.ddl4j.model.Table;
+import pro.batalin.ddl4j.model.alters.constraint.AddConstraintPrimaryAlter;
+import pro.batalin.ddl4j.model.constraints.PrimaryKey;
 import pro.batalin.ddl4j.platforms.Platform;
 import pro.batalin.ddl4j.platforms.PlatformFactory;
 import pro.batalin.ddl4j.platforms.PlatformFactoryException;
@@ -64,5 +67,21 @@ public class DatabaseModel {
         String selectQuery = "SELECT * FROM " + table.getFullName();
         Statement statement = connection.createStatement();
         return statement.executeQuery(selectQuery);
+    }
+
+    public void createTable(Table table) throws DatabaseOperationException {
+        table.setSchema(currentScheme);
+        platform.createTable(table);
+    }
+
+    private long maxAllowedPrimaryKey = 0;
+    public void createPrimaryKey(Table table, List<Column> primaryKey) throws DatabaseOperationException {
+        AddConstraintPrimaryAlter primaryAlter = new AddConstraintPrimaryAlter(
+                table,
+                "pk_" + maxAllowedPrimaryKey++,
+                primaryKey);
+
+
+        platform.executeAlter(primaryAlter);
     }
 }
