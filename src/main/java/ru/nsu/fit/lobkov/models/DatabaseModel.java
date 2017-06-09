@@ -4,7 +4,9 @@ import pro.batalin.ddl4j.DatabaseOperationException;
 import pro.batalin.ddl4j.model.Column;
 import pro.batalin.ddl4j.model.Schema;
 import pro.batalin.ddl4j.model.Table;
+import pro.batalin.ddl4j.model.alters.constraint.AddConstraintForeignKeyAlter;
 import pro.batalin.ddl4j.model.alters.constraint.AddConstraintPrimaryAlter;
+import pro.batalin.ddl4j.model.alters.constraint.AddConstraintUniqueAlter;
 import pro.batalin.ddl4j.model.constraints.PrimaryKey;
 import pro.batalin.ddl4j.platforms.Platform;
 import pro.batalin.ddl4j.platforms.PlatformFactory;
@@ -14,6 +16,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
 
 /**
  * Created by Ilya on 22.05.2017.
@@ -74,14 +77,63 @@ public class DatabaseModel {
         platform.createTable(table);
     }
 
-    private long maxAllowedPrimaryKey = 0;
+//    private long maxAllowedPrimaryKey = 0;
+
     public void createPrimaryKey(Table table, List<Column> primaryKey) throws DatabaseOperationException {
+        String columnNames = String.join("_", primaryKey.stream().map(Column::getName).collect(Collectors.toList()));
         AddConstraintPrimaryAlter primaryAlter = new AddConstraintPrimaryAlter(
                 table,
-                "pk_" + maxAllowedPrimaryKey++,
-                primaryKey);
+                String.join("_", "pk", table.getName(), columnNames),
+                primaryKey
+        );
 
 
         platform.executeAlter(primaryAlter);
     }
+
+//    private long maxAllowedUnique = 0;
+
+    public void createUnique(Table table, List<Column> uniqueColumns) throws DatabaseOperationException {
+        String columnNames = String.join("_", uniqueColumns.stream().map(Column::getName).collect(Collectors.toList()));
+        AddConstraintUniqueAlter uniqueAlter = new AddConstraintUniqueAlter(
+                table,
+                String.join("_", "unq", table.getName(), columnNames),
+                uniqueColumns
+        );
+
+        platform.executeAlter(uniqueAlter);
+    }
+
+    public void createForeignKey(Table firstTable, String firstColumnName, String foreignTableName, String foreignColumnName)
+            throws DatabaseOperationException {
+        Column firstColumn = new Column();
+        firstColumn.setName(firstColumnName);
+
+        Column foreignColumn = new Column();
+        foreignColumn.setName(foreignColumnName);
+
+        Table foreignTable = platform.loadTable(currentScheme, foreignTableName);
+
+        AddConstraintForeignKeyAlter foreignKeyAlter = new AddConstraintForeignKeyAlter(
+                firstTable,
+                firstColumn,
+                foreignTable,
+                foreignColumn,
+                String.join("_",
+                        "fk",
+                        firstTable.getName(),
+                        firstColumnName,
+                        foreignTableName,
+                        foreignColumnName
+                )
+        );
+
+
+        platform.executeAlter(foreignKeyAlter);
+    }
+
+    public void executeQuery(String query) throws DatabaseOperationException {
+        platform.executeQuery(query);
+    }
+
 }

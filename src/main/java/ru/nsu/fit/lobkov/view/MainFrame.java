@@ -1,5 +1,6 @@
 package ru.nsu.fit.lobkov.view;
 
+import pro.batalin.ddl4j.DatabaseOperationException;
 import pro.batalin.ddl4j.model.Column;
 import pro.batalin.ddl4j.model.Schema;
 import pro.batalin.ddl4j.model.Table;
@@ -11,6 +12,8 @@ import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -26,11 +29,12 @@ public class MainFrame extends BaseFrame {
     private JTable tableView;
     private JScrollPane listScrollPanel;
     private JScrollPane tableScrollPanel;
+    private JButton addButton;
+    private JButton removeButton;
+    private JButton updateButton;
 
     private DatabaseModel dbModel;
     private DefaultListModel<Table> tableListModel;
-
-
 
     public MainFrame(MainFrameController controller, DatabaseModel dbModel) throws HeadlessException {
         this.controller = controller;
@@ -51,6 +55,22 @@ public class MainFrame extends BaseFrame {
             controller.onTableSelectionChanged((Table)source.getSelectedValue());
         });
 
+        addButton.addActionListener(controller::onAddBtnPressed);
+        updateButton.addActionListener(e -> {
+            CustomTableModel ctm = (CustomTableModel)tableView.getModel();
+            try {
+                ctm.commitChanges();
+            } catch (DatabaseOperationException e1) {
+                e1.printStackTrace();
+            }
+        });
+        removeButton.addActionListener(e -> {
+            int[] selectedRows = tableView.getSelectedRows();
+            CustomTableModel ctm = (CustomTableModel)tableView.getModel();
+            for (int i : selectedRows) {
+                ctm.removeRow(i);
+            }
+        });
     }
 
     public void setTableList(List<Table> tableList) {
@@ -74,6 +94,8 @@ public class MainFrame extends BaseFrame {
         JMenu databaseMenu = createMenu("Database");
         JMenuItem updateItem = createMenuItem(databaseMenu, "Update", controller::updateTableList);
         JMenuItem createTableItem = createMenuItem(databaseMenu, "Create table", controller::createTable);
+        JMenuItem editTalbeItem = createMenuItem(databaseMenu, "Edit table", controller::createTable);
+        JMenuItem removeTalbeItem = createMenuItem(databaseMenu, "Remove table", controller::createTable);
     }
 
     private void createUIComponents() {
@@ -85,6 +107,16 @@ public class MainFrame extends BaseFrame {
         tableView = new JTable();
         tableScrollPanel = new JScrollPane(tableView);
         tableView.setFillsViewportHeight(true);
+    }
+
+    public void insertEmptyRowToTable() {
+        CustomTableModel customTableModel = (CustomTableModel)tableView.getModel();
+        int columnCount = tableView.getColumnCount();
+        Object[] data = new Object[columnCount];
+        for (int i = 0; i < columnCount; i++) {
+            data[i] = "";
+        }
+        customTableModel.addRow(data);
     }
 
 }

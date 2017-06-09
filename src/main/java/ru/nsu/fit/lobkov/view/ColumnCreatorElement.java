@@ -95,6 +95,7 @@ public class ColumnCreatorElement extends JPanel {
         result.setDefaultValue(getColumnDefaultValue());
         result.setRequired(isNotNull());
         result.setPrimaryKey(isPrimaryKey());
+        result.setUnique(isUnique());
 
         return result;
     }

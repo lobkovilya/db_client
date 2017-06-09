@@ -7,6 +7,7 @@ import ru.nsu.fit.lobkov.models.DatabaseModel;
 import ru.nsu.fit.lobkov.view.CreateTableFrame;
 import ru.nsu.fit.lobkov.view.MainFrame;
 
+import java.awt.event.ActionEvent;
 import java.util.List;
 
 /**
@@ -46,5 +47,13 @@ public class MainFrameController {
 
     public void createTable() {
         createTableFrameController = new CreateTableFrameController(dbModel);
+    }
+
+    public void onAddBtnPressed(ActionEvent e) {
+        mainFrame.insertEmptyRowToTable();
+    }
+
+    public void onCommitBtnPressed(ActionEvent e) {
+
     }
 }
